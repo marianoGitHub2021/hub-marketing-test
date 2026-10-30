@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias(['active' => EnsureUserIsActive::class]);
+        // Dietro un proxy (Codespaces, bilanciatore in produzione) fidarsi delle intestazioni X-Forwarded-*
+        // solo per gli indirizzi indicati in TRUSTED_PROXIES.
+        if ($proxies = env('TRUSTED_PROXIES')) {
+            $middleware->trustProxies(at: $proxies === '*' ? '*' : explode(',', $proxies));
+        }
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('overview'));
     })

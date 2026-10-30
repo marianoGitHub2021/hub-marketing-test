@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Impostazioni, anagrafica, utenti: solo admin (docs/decisioni-fase-0.md §6).
         Gate::define('admin', fn (User $user) => $user->is_admin);
+
+        // Con un APP_URL https tutti i link e gli asset devono essere https, anche dietro un proxy.
+        if (str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 }

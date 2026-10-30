@@ -12,6 +12,14 @@ if [ ! -f .env ]; then
     sed -i 's/^HUB_DEV_LOGIN=.*/HUB_DEV_LOGIN=true/' .env
 fi
 
+# In Codespaces l'app è servita in https tramite il proxy di GitHub.
+if [ -n "${CODESPACE_NAME:-}" ]; then
+    url="https://${CODESPACE_NAME}-8000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+    sed -i "s|^APP_URL=.*|APP_URL=${url}|" .env
+    sed -i 's/^TRUSTED_PROXIES=.*/TRUSTED_PROXIES=*/' .env
+    grep -q '^TRUSTED_PROXIES=' .env || echo 'TRUSTED_PROXIES=*' >> .env
+fi
+
 touch database/database.sqlite
 php artisan migrate --force --no-interaction
 
