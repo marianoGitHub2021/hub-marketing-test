@@ -51,7 +51,9 @@ Stato Fase 0: completata. Tutte le decisioni sono prese e l'anagrafica dei clien
 
 **Più persone sullo stesso ruolo** (**Proposta — da confermare**): l'ordine nella tabella indica il titolare (primo nome), che riceve le notifiche; gli altri sono co-assegnatari e vedono le allerte in "Assegnate a me". Il sostituto subentra quando il titolare è segnato assente in Impostazioni.
 
-**Modello dati** (aggiornato 20/10/2026): idcliente unico → siti (idsito) → account piattaforme. Un cliente con un solo sito ha un idcliente e un solo sito collegato. Ogni account può essere collegato a uno o più siti dello stesso cliente (es. un account Meta per tutto il gruppo). Le assegnazioni specialista × ruolo sono per sito. In Fido il cliente corrisponde all'anagrafica collegata ai siti (tabelle anagrafica e rel_anagra_siti): da verificare sullo schema del database di Fido se usarne l'id come idcliente. È il primo punto da chiudere: è la chiave del livello 2.
+**Modello dati** (aggiornato 20/10/2026): idcliente unico → siti (idsito) → account piattaforme. Un cliente con un solo sito ha un idcliente e un solo sito collegato. Ogni account può essere collegato a uno o più siti dello stesso cliente (es. un account Meta per tutto il gruppo). Le assegnazioni specialista × ruolo sono per sito. 
+
+**idcliente** (deciso il 30/10/2026): il cliente è una tabella dell'Hub, creata a partire dall'anagrafica di Fido (`anagrafica.idanagra` collegata ai siti tramite `rel_anagra_siti`). L'admin può unire più anagrafiche nello stesso cliente. Verifica sulle strutture pilota: l'anagrafica coincide con il gruppo in 6 clienti su 8; non coincide per Airport Hotel Bologna (2685) + Easy Parking e sito congressi (2249) e per Primula (2471) + Hotel Galli's (2431). In Fido molte strutture hanno più siti (siti in lingua, landing "offerte."): per ogni struttura l'Hub indica il sito principale.
 
 **Account condivisi con assegnatari diversi** (**Proposta — da confermare**): ogni account ha una "struttura di riferimento"; le allerte dell'account vanno all'operatore del ruolo su quella struttura (es. Meta di Ca' Bianca + Brig → Rossella o Giada secondo la struttura di riferimento).
 
@@ -199,6 +201,7 @@ Ogni modifica alle attività di piano è registrata nello storico (chi, quando, 
 
 - Nuova applicazione separata con database dedicato, sullo stesso stack di Fido/Quoto: PHP + MariaDB (Fido su MariaDB 11.4).
 - Impostazione moderna consigliata: PHP 8.3+ con framework diffuso (es. Laravel), frontend JavaScript per la dashboard, lettura da Fido/Quoto in sola lettura. Eccezione (Fase 2): creazione dei task di piano in Fido.
+- Accesso ai dati (deciso il 30/10/2026): l'Hub legge Google Ads, GA4, Fido e Quoto tramite i connettori MCP di Network Service già esistenti, gli stessi usati da Claude, invece di collegarsi direttamente ai database o di riscrivere le integrazioni. Il server dell'Hub può quindi stare fuori dalla rete di Fido: deve solo raggiungere i connettori. Le regole di sola lettura ed esclusione dei dati personali sono applicate dai connettori. Meta resta sull'API Marketing diretta.
 - Sviluppo (deciso il 30/10/2026): il codice è generato con Claude su indicazione di Mariano, senza passare dal programmatore di Fido e Quoto. Architettura, integrazioni, sicurezza e rilasci sono gestiti in questo modo; il programmatore non è un passaggio obbligato.
 - Regole di progetto: repository Git (marianoGitHub2021/hub-marketing-test), ambiente di prova separato, file di istruzioni per Claude nel repository, test automatici sul motore delle regole, approvazione di Mariano prima dei rilasci.
 - Accesso utenti: proposto login con account Google aziendale.
@@ -208,9 +211,9 @@ Ogni modifica alle attività di piano è registrata nello storico (chi, quando, 
 
 | Fonte | Connettore attuale | Uso nell'hub |
 |---|---|---|
-| Google Ads (MCC) | Codice proprietario | Riuso della stessa logica/credenziali nel backend |
-| GA4 | Codice proprietario | Come sopra; rapporto in tempo reale per confermare D01 |
-| Fido / Quoto | Codice proprietario (sola lettura) | Lettura diretta dai DB o tramite lo stesso codice; Fido: progetti, task, ore, contratti; scrittura dei task di piano dalla Fase 2 |
+| Google Ads (MCC) | Connettore MCP Google Ads NS (query GAQL) | Raccolta giornaliera tramite il connettore |
+| GA4 | Connettore MCP Google Analytics NS | Raccolta giornaliera tramite il connettore; rapporto in tempo reale per confermare D01 |
+| Fido / Quoto | Connettori MCP ERP Fido e Quoto Campagne ADS (sola lettura) | Fido: anagrafica, siti, progetti, attività, ore, contratti e rinnovi; Quoto: funnel e richieste aggregate. Scrittura dei task di piano (Fase 2) da definire |
 | Meta Ads | MCP fornito da Meta | API Marketing di Meta diretta, con token "utente di sistema" del Business Manager |
 | Strumenti newsletter | — | Import CSV; API solo per gli strumenti più usati (Fase 2) |
 
@@ -237,10 +240,11 @@ Valori modificabili senza intervenire sul codice:
 
 | Punto | Da chi | Serve entro |
 |---|---|---|
-| Uso dell'id anagrafica di Fido come idcliente (base del livello 2): serve lo schema delle tabelle anagrafica e rel_anagra_siti | Mariano | Inizio MVP-0 (primo punto) |
-| Server dell'Hub (PHP 8.3+, MariaDB, cron) e accesso in lettura ai database di Fido e Quoto | Mariano | Inizio MVP-0 |
+| Unione delle anagrafiche Fido nei clienti dell'Hub e sito principale per struttura (pilota: Airport + Easy Parking, Primula + Galli's) | Mariano | Inizio MVP-0 |
+| Server dell'Hub (PHP 8.3+, MariaDB, cron) | Mariano | Rilascio MVP-0 |
+| Accesso dei connettori MCP da server a server (indirizzo e credenziale per l'Hub, limiti di chiamate) | Mariano | Inizio sviluppo dei connettori |
 | Credenziali/token per uso backend (Google Ads, GA4, Search Console, Meta "utente di sistema") | Mariano | Inizio MVP-0 |
-| Lettura di progetti, task, ore e contratti da Fido: tabelle e campi | Mariano | MVP-0 (CTR) |
+| CTR-03: Fido gestisce il monte ore per progetto, non per mese; riformulare la regola (proposta nella specifica tecnica MVP-0) | Mariano | MVP-0 (CTR) |
 | Scrittura dei task di piano su Fido dall'Hub (eventuale coinvolgimento del programmatore solo qui) | Mariano | Prima della Fase 2 |
 | Campi aggiuntivi dell'anagrafica (§2) per le strutture pilota | Account + Admin | MVP-0 |
 | Caselle email di notifica per settore (mail marketing, editor) | Team | MVP-0 (notifiche) |

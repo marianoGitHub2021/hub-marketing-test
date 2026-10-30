@@ -31,6 +31,8 @@ Hub interno di Network Service per le attività di marketing sui clienti hotel. 
 
 PHP 8.3+ con Laravel, MariaDB, frontend JavaScript, raccolta dati schedulata una volta al giorno prima delle 08:30.
 
+I dati di Google Ads, GA4, Fido e Quoto si leggono tramite i connettori MCP di Network Service (nessun accesso diretto ai database). Meta tramite API Marketing diretta. Dettagli in `docs/specifica-tecnica-mvp0.md`.
+
 ## Note sulle API (dalla prova a secco del 30/10/2026)
 
 - Google Ads: date campagna con `campaign.start_date_time` / `campaign.end_date_time`; conversioni contate con `conversion_action.include_in_conversions_metric`; le query segmentate per data non restituiscono righe a zero.

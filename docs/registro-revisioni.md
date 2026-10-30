@@ -145,3 +145,13 @@ Altre modifiche:
 # Decisione del 30/10/2026: sviluppo senza il programmatore
 
 Il codice dell'Hub è generato con Claude su indicazione di Mariano, senza passare dal programmatore di Fido e Quoto. Aggiornati CLAUDE.md, README.md e decisioni-fase-0.md (§7 e punti aperti): i punti prima assegnati al programmatore passano a Mariano (server, accessi in lettura a Fido e Quoto con lo schema delle tabelle, credenziali delle API). La revisione prima dei rilasci diventa l'approvazione di Mariano, con test automatici sul motore delle regole.
+
+---
+
+# Decisioni del 30/10/2026: accesso ai dati e idcliente
+
+- **Accesso ai dati**: l'Hub legge Google Ads, GA4, Fido e Quoto tramite i connettori MCP di Network Service già esistenti, non con accesso diretto ai database. Il server dell'Hub può stare ovunque raggiunga i connettori. Meta resta sull'API Marketing diretta. File: decisioni-fase-0.md §7, CLAUDE.md.
+- **idcliente**: tabella dell'Hub creata dall'anagrafica di Fido, con possibilità di unire più anagrafiche. Verificato con il connettore Fido: l'anagrafica coincide con il gruppo in 6 clienti pilota su 8; Airport + Easy Parking e Primula + Galli's hanno due anagrafiche ciascuno. Chiuso il primo punto aperto. File: decisioni-fase-0.md §2.
+- **CTR-03**: Fido gestisce il monte ore per progetto, non per mese. Proposta di riformulazione nella specifica tecnica MVP-0, da confermare prima di aggiornare il catalogo.
+- **Specifica tecnica MVP-0** (nuovo documento `specifica-tecnica-mvp0.md`).
+- **Escalation, correzione dell'esempio**: un'allerta aperta venerdì alle 18:00 raggiunge 24 ore lavorative mercoledì alle 14:30, non martedì. Precisato che a 24 ore solo le allerte TRK passano da Alta a Critica; le altre restano al massimo Alta. File: catalogo-allerte.md §1.

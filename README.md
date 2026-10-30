@@ -18,6 +18,7 @@ Fase di specifica completata (catalogo allerte v0.5). Il codice non è ancora in
 | [docs/catalogo-allerte.md](docs/catalogo-allerte.md) | Regole delle allerte e della diagnostica tracciamento, soglie, fasi |
 | [docs/mappa-applicazione.md](docs/mappa-applicazione.md) | Pagine, navigazione, configurazione, specifica della pagina Google Ads |
 | [docs/decisioni-fase-0.md](docs/decisioni-fase-0.md) | Decisioni prese, clienti pilota, ruoli e permessi, stack, punti aperti |
+| [docs/specifica-tecnica-mvp0.md](docs/specifica-tecnica-mvp0.md) | Architettura, modello dati, raccolta, motore delle regole, test e ordine di sviluppo dell'MVP-0 |
 | [docs/registro-revisioni.md](docs/registro-revisioni.md) | Modifiche v0.4 e v0.5 con motivazione e proposte da confermare |
 | [docs/analisi-replit-visual-impact.md](docs/analisi-replit-visual-impact.md) | Analisi del mockup Visual Impact a cui il progetto si ispira |
 | [docs/report/prova-a-secco-mvp0.html](docs/report/prova-a-secco-mvp0.html) | Prova a secco delle allerte MVP-0 su dati reali (30/10/2026) |

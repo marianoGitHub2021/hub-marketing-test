@@ -52,7 +52,7 @@ Unica regola valida per tutto l'Hub; la mappa dell'applicazione rimanda qui.
 - L'escalation si ferma quando l'allerta è "In carico" o "Silenziata".
 - Nessuna allerta ha un'escalation propria (in v0.3 TRK-02 ne aveva una: eliminata).
 
-Esempio: un'allerta TRK Alta aperta venerdì alle 18:00 diventa Critica martedì verso metà giornata, se nessuno la prende in carico.
+Esempio: un'allerta TRK Alta aperta venerdì alle 18:00 diventa Critica mercoledì alle 14:30 (24 ore lavorative: lunedì 9 h, martedì 9 h, mercoledì 6 h), se nessuno la prende in carico. Le allerte non TRK salgono al massimo ad Alta.
 
 ### Sospensione dei controlli
 
