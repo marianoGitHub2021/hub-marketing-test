@@ -23,6 +23,10 @@ Specifiche complete (catalogo allerte v0.5). Sviluppo in corso, passo 1 di 7: ba
 | [docs/analisi-replit-visual-impact.md](docs/analisi-replit-visual-impact.md) | Analisi del mockup Visual Impact a cui il progetto si ispira |
 | [docs/report/prova-a-secco-mvp0.html](docs/report/prova-a-secco-mvp0.html) | Prova a secco delle allerte MVP-0 su dati reali (30/10/2026) |
 
+## Provarlo in GitHub Codespaces
+
+Dalla pagina del repository o della pull request: **Code › Codespaces › Create codespace**. La configurazione in `.devcontainer/` installa tutto, prepara il database e avvia l'applicazione sulla porta 8000 (scheda **Ports**). Si entra con il riquadro "Accesso di sviluppo" e un'email `@network-service.it`; per diventare admin, nel terminale: `php artisan hub:make-admin tua.email@network-service.it`. La prima creazione richiede qualche minuto.
+
 ## Avvio in locale
 
 Servono PHP 8.3+, Composer e Node.js.
