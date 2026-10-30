@@ -29,7 +29,18 @@ Hub interno di Network Service per le attività di marketing sui clienti hotel. 
 
 ## Stack
 
-PHP 8.3+ con Laravel, MariaDB, frontend JavaScript, raccolta dati schedulata una volta al giorno prima delle 08:30.
+PHP 8.3+ con Laravel 13, MariaDB (SQLite in sviluppo e nei test), Blade + Alpine.js + Tailwind CSS 4 con Vite, raccolta dati schedulata una volta al giorno prima delle 08:30.
+
+Comandi utili:
+
+- `php artisan test` — tutti i test (devono passare prima di ogni commit);
+- `vendor/bin/pint` — formattazione del codice (la CI esegue `pint --test`);
+- `npm run build` — compila CSS e JS;
+- `php artisan hub:make-admin email@network-service.it` — assegna il ruolo di admin.
+
+In locale si accede senza Google impostando `HUB_DEV_LOGIN=true` nel `.env`; l'accesso di sviluppo è ignorato fuori dagli ambienti `local` e `testing`.
+
+Nell'ambiente cloud di Claude GitHub blocca il download degli zip dei pacchetti: Composer ripiega sui clone git. Per contenerne il peso usare un wrapper di `git` che aggiunge `--filter=blob:none` ai clone.
 
 I dati di Google Ads, GA4, Fido e Quoto si leggono tramite i connettori MCP di Network Service (nessun accesso diretto ai database). Meta tramite API Marketing diretta. Dettagli in `docs/specifica-tecnica-mvp0.md`.
 

@@ -33,9 +33,9 @@ Escluso (MVP-1 e fasi successive): overview cliente, pagine Google Ads e Meta de
 
 | Componente | Scelta |
 |---|---|
-| Linguaggio e framework | PHP 8.3+, Laravel 11 |
+| Linguaggio e framework | PHP 8.3+, Laravel 13 (Laravel 11 non riceve più correzioni di sicurezza) |
 | Database | MariaDB 11.4 (stessa versione di Fido); SQLite in memoria per i test |
-| Interfaccia | Blade + Alpine.js + Tailwind CSS (compilati con Vite). Nessuna single page app nell'MVP-0: le pagine sono elenchi e tabelle filtrabili. Grafici (MVP-1) con Chart.js |
+| Interfaccia | Blade + Alpine.js + Tailwind CSS 4 (compilati con Vite), font di sistema senza servizi esterni. Nessuna single page app nell'MVP-0: le pagine sono elenchi e tabelle filtrabili. Grafici (MVP-1) con Chart.js |
 | Code e job | Laravel Queue su database (nessun Redis richiesto) |
 | Schedulazione | Laravel Scheduler, un solo cron di sistema `* * * * * php artisan schedule:run` |
 | Login | Google OAuth (Laravel Socialite) limitato al dominio `network-service.it` |

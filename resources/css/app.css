@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/*
+ * ns-hub: colori del restyling del sito Network Service.
+ * Tema scuro predefinito, tema chiaro con data-theme="light" (docs/mappa-applicazione.md, elementi trasversali).
+ */
+:root {
+    --ns-bg: #0d0c1d;
+    --ns-surface: #16152b;
+    --ns-surface-2: #1e1d38;
+    --ns-line: #2c2a4a;
+    --ns-fg: #ecebf7;
+    --ns-muted: #a3a1c0;
+    --ns-accent: #f0479a;
+    --ns-accent-strong: #ff5aa8;
+    --ns-accent-soft: #3a1630;
+    --ns-critical: #ff8a7a;
+    --ns-high: #f5a35c;
+    --ns-medium: #f2c35b;
+    --ns-info: #8fb8ff;
+    --ns-ok: #5fd39a;
+    color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+    --ns-bg: #f6f5fa;
+    --ns-surface: #ffffff;
+    --ns-surface-2: #eeedf5;
+    --ns-line: #dcdae8;
+    --ns-fg: #17162b;
+    --ns-muted: #5d5b78;
+    --ns-accent: #c2186b;
+    --ns-accent-strong: #a3125a;
+    --ns-accent-soft: #fbe6f0;
+    --ns-critical: #b42318;
+    --ns-high: #b54708;
+    --ns-medium: #8a5a00;
+    --ns-info: #1d4ed8;
+    --ns-ok: #1f7a4d;
+    color-scheme: light;
+}
+
+@theme inline {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --color-bg: var(--ns-bg);
+    --color-surface: var(--ns-surface);
+    --color-surface-2: var(--ns-surface-2);
+    --color-line: var(--ns-line);
+    --color-fg: var(--ns-fg);
+    --color-muted: var(--ns-muted);
+    --color-accent: var(--ns-accent);
+    --color-accent-strong: var(--ns-accent-strong);
+    --color-accent-soft: var(--ns-accent-soft);
+    --color-critical: var(--ns-critical);
+    --color-high: var(--ns-high);
+    --color-medium: var(--ns-medium);
+    --color-info: var(--ns-info);
+    --color-ok: var(--ns-ok);
+}
+
+@layer base {
+    body {
+        @apply bg-bg text-fg antialiased;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-accent;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
