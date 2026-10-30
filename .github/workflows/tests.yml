@@ -1,0 +1,59 @@
+name: Test
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [sqlite, mariadb]
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: hub_test
+          MARIADB_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, pdo_mysql, intl
+          coverage: none
+
+      - name: Dipendenze
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Ambiente
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Stile del codice
+        if: matrix.database == 'sqlite'
+        run: vendor/bin/pint --test
+
+      - name: Test (SQLite)
+        if: matrix.database == 'sqlite'
+        run: php artisan test
+
+      - name: Test (MariaDB)
+        if: matrix.database == 'mariadb'
+        env:
+          DB_CONNECTION: mariadb
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: hub_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: php artisan test
