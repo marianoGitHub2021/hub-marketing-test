@@ -1,0 +1,36 @@
+# Istruzioni per Claude — Hub Marketing
+
+## Progetto
+
+Hub interno di Network Service per le attività di marketing sui clienti hotel. Le specifiche sono in `docs/`; sono la fonte di verità per regole, soglie e fasi. Leggi il documento pertinente prima di implementare o modificare una funzione.
+
+- Regole delle allerte: `docs/catalogo-allerte.md` (versione corrente v0.5).
+- Pagine e configurazione: `docs/mappa-applicazione.md`.
+- Decisioni, ruoli, permessi, stack, punti aperti: `docs/decisioni-fase-0.md`.
+- Storico delle modifiche alle specifiche: `docs/registro-revisioni.md`.
+
+## Regole di lavoro
+
+- Lingua: documenti, interfaccia e messaggi delle allerte in italiano. Codice, nomi di tabelle e variabili in inglese.
+- Una modifica alle regole di business va prima nelle specifiche (`docs/`) e nel registro revisioni, poi nel codice.
+- Le soglie non si scrivono nel codice: stanno nel file di configurazione e sono modificabili per struttura.
+- Le parti marcate "Proposta — da confermare" non vanno implementate come definitive senza conferma.
+- Fido e Quoto si leggono in sola lettura. Unica eccezione prevista (Fase 2): creazione dei task di piano in Fido.
+- Nessuna azione automatica sulle piattaforme pubblicitarie (budget, campagne, annunci).
+- Dati di Quoto solo aggregati: nessun dato personale negli snapshot.
+- Credenziali e token solo lato server, mai nel repository né nel frontend.
+
+## Rilasci
+
+- Repository Git, ambiente di prova separato.
+- Revisione del programmatore di Fido e Quoto prima di ogni rilascio.
+- Si lavora su branch; nessun push diretto sul branch principale per il codice.
+
+## Stack (da confermare col programmatore)
+
+PHP 8.3+ con Laravel, MariaDB, frontend JavaScript, raccolta dati schedulata una volta al giorno prima delle 08:30.
+
+## Note sulle API (dalla prova a secco del 30/10/2026)
+
+- Google Ads: date campagna con `campaign.start_date_time` / `campaign.end_date_time`; conversioni contate con `conversion_action.include_in_conversions_metric`; le query segmentate per data non restituiscono righe a zero.
+- GA4: i dati di D-1 alle 08:30 sono incompleti; i controlli (tranne D01) usano il giorno consolidato D-2.

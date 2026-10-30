@@ -1,0 +1,243 @@
+<title>Prova a secco MVP-0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: report a una colonna, sintesi in alto, poi problemi, matrice struttura × controllo, correzioni, configurazione, note tecniche. Colori del restyling NS: blu notte + magenta. */
+:root{
+  --bg:#f6f5fa; --surface:#ffffff; --surface-2:#eeedf5; --fg:#17162b; --muted:#5d5b78; --line:#dcdae8;
+  --accent:#c2186b; --accent-soft:#fbe6f0;
+  --ok:#1f7a4d; --ok-bg:#e3f4ea; --true:#b42318; --true-bg:#fde7e4; --false:#8a5a00; --false-bg:#fdf1d6;
+  --unclear:#5b3fc4; --unclear-bg:#ece7fb; --nv:#6b6985; --nv-bg:#ecebf3;
+  --f-display:"Manrope",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d0c1d; --surface:#16152b; --surface-2:#1e1d38; --fg:#ecebf7; --muted:#a3a1c0; --line:#2c2a4a;
+  --accent:#f0479a; --accent-soft:#3a1630;
+  --ok:#5fd39a; --ok-bg:#12301f; --true:#ff8a7a; --true-bg:#3b1716; --false:#f2c35b; --false-bg:#352a0e;
+  --unclear:#b8a6ff; --unclear-bg:#2a2250; --nv:#a3a1c0; --nv-bg:#24233d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d0c1d; --surface:#16152b; --surface-2:#1e1d38; --fg:#ecebf7; --muted:#a3a1c0; --line:#2c2a4a;
+  --accent:#f0479a; --accent-soft:#3a1630;
+  --ok:#5fd39a; --ok-bg:#12301f; --true:#ff8a7a; --true-bg:#3b1716; --false:#f2c35b; --false-bg:#352a0e;
+  --unclear:#b8a6ff; --unclear-bg:#2a2250; --nv:#a3a1c0; --nv-bg:#24233d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4vw,40px);font-weight:800}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0;max-width:72ch}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header{display:grid;gap:12px}
+section{display:grid;gap:16px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font:13px var(--f-mono);color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:4px}
+.tile b{font:800 30px var(--f-display);font-variant-numeric:tabular-nums}
+.tile span{font-size:13px;color:var(--muted)}
+.tile.t b{color:var(--true)} .tile.f b{color:var(--false)} .tile.o b{color:var(--ok)}
+.callout{background:var(--accent-soft);border-radius:10px;padding:16px 18px;display:grid;gap:6px}
+ol.problems{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:p}
+ol.problems li{counter-increment:p;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:grid;gap:4px}
+ol.problems li::before{content:counter(p);position:absolute;left:16px;top:14px;width:24px;height:24px;border-radius:50%;background:var(--true-bg);color:var(--true);font:600 13px/24px var(--f-mono);text-align:center}
+.who{font:12px var(--f-mono);color:var(--muted)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11.5px var(--f-mono);letter-spacing:.04em;color:var(--muted);background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mx td{text-align:center;padding:8px 6px}
+.mx td:first-child,.mx th:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1}
+.mx th:first-child{background:var(--surface-2)}
+.mx .grp td{background:var(--surface-2);font:500 11.5px var(--f-mono);color:var(--muted);text-align:left;letter-spacing:.04em}
+.c{display:inline-block;min-width:30px;padding:2px 6px;border-radius:5px;font:500 11.5px var(--f-mono);white-space:nowrap}
+.c.ok{background:var(--ok-bg);color:var(--ok)}
+.c.t{background:var(--true-bg);color:var(--true)}
+.c.f{background:var(--false-bg);color:var(--false)}
+.c.u{background:var(--unclear-bg);color:var(--unclear)}
+.c.nv{background:var(--nv-bg);color:var(--nv)}
+.c.na{color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.fixes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.fix{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:8px;align-content:start}
+.fix .code{font:500 12px var(--f-mono);color:var(--accent)}
+.fix dl{margin:0;display:grid;gap:4px;font-size:13.5px}
+.fix dt{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fix dd{margin:0 0 4px}
+ul.plain{margin:0;padding-left:18px;display:grid;gap:6px;max-width:80ch}
+code{font:12.5px var(--f-mono);background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.cols>*{min-width:0}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Hub Marketing · catalogo allerte v0.4</div>
+  <h1>Prova a secco delle allerte MVP-0</h1>
+  <p class="muted">Controlli del catalogo eseguiti a mano, in sola lettura, su Google Ads e GA4 delle prime strutture pilota. Serve a vedere quali allerte scatterebbero oggi, quante sono vere e quali regole vanno corrette prima dello sviluppo.</p>
+  <div class="meta"><span>Eseguita il 30/10/2026</span><span>Giorno valutato D-1 = 29/10 · GA4 consolidato D-2 = 28/10</span><span>Meta, Quoto, Fido e Stape non verificati</span></div>
+</header>
+
+<section>
+  <h2>Sintesi</h2>
+  <div class="tiles">
+    <div class="tile"><b>8</b><span>strutture verificate su Google Ads (3 clienti)<br>6 anche su GA4</span></div>
+    <div class="tile"><b>23</b><span>allerte MVP-0 che scatterebbero oggi</span></div>
+    <div class="tile o"><b>19</b><span>vere o probabilmente vere</span></div>
+    <div class="tile f"><b>4</b><span>false, tutte evitabili con le correzioni proposte sotto</span></div>
+  </div>
+  <div class="callout">
+    <h3>In breve</h3>
+    <p>Le regole reggono: l'83% delle allerte segnala un problema reale. I 4 falsi allarmi nascono da campagne quasi ferme e da strutture in bassa stagione, e si eliminano con una spesa minima, il conteggio dei soli clic Search/PMax e il calendario di apertura. Il problema più diffuso non è un blocco ma la configurazione delle conversioni: è sbagliata su tutti gli 8 account Google Ads.</p>
+  </div>
+  <p class="muted">Fermata dall'utente dopo i primi clienti. Non verificati: Bucaneve, Coast, Vista Mare Cesenatico, gruppo Eden Roc, Parco dei Castagni, Ca' Bianca, Hotel Brig; GA4 di Primula e Galli's. Le allerte BUD (quota impressioni) sono contate a parte perché non sono in MVP-0.</p>
+</section>
+
+<section>
+  <h2>Problemi reali da sistemare subito</h2>
+  <ol class="problems">
+    <li><h3>Conversioni primarie duplicate o gonfiate su tutti gli 8 account (TRK-13)</h3>
+      <p>Primula conta due volte richieste e iscrizioni newsletter (azione del tag + azione importata da GA4) e tiene "visite in negozio" come primaria con valore 59. Galli's conta due volte le chiamate dagli annunci. Villa Eos, Stella Marina e Il Corallo usano lo stesso modello con clic su email, telefono, WhatsApp, booking engine e newsletter tutti primari con valore. Le offerte automatiche ottimizzano su questi dati.</p>
+      <span class="who">ADV Google · prima del rilascio, altrimenti TRK-13 apre 8 allerte il primo giorno</span></li>
+    <li><h3>Tramonto d'Oro: richieste ferme e prenotazioni contate tre volte</h3>
+      <p>Google Ads: 0 conversioni su 182 clic in 48 ore (attese circa 3); <code>generate_lead</code> non registra nulla dal 1° ottobre. GA4: il 28/10 tre eventi <code>purchase</code> nella stessa sessione, segno di pagina di ringraziamento ricaricata o tag doppio. Da verificare la deduplica con l'ID transazione.</p>
+      <span class="who">ADV Google · TRK-04 e TRK-03</span></li>
+    <li><h3>Campagne Brand limitate dal budget</h3>
+      <p>Primula perde il 18% delle impressioni sul nome per budget, Galli's il 31% (e il 20% per ranking). Sono i casi che BUD-01 dovrebbe segnalare come Alta.</p>
+      <span class="who">ADV Google + Account · proposta di aumento budget</span></li>
+    <li><h3>Strutture di Positano e Amalfi con traffico quasi assente in GA4</h3>
+      <p>Villa Eos, Stella Marina e Il Corallo ricevono ancora clic da remarketing e brand (25–69 sessioni da Google Ads al mese, circa 110 € di spesa a ottobre ciascuna per Stella Marina e Il Corallo) ma GA4 registra pochissime sessioni anche in alta stagione (Villa Eos al massimo 39 a settimana). Possibili cause: tag su una parte del sito o banner dei consensi che blocca la raccolta.</p>
+      <span class="who">ADV Google · da verificare prima di affidarsi a TRK-01/02</span></li>
+    <li><h3>Easy Parking: campagne Brand anomale</h3>
+      <p>"IT | RR | brand" è idonea ma ha 0 impressioni in 7 giorni; "IT | RR | brand [esperimento]" è attiva ma terminata nel 2024.</p>
+      <span class="who">ADV Google · pulizia account</span></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Esito per struttura e controllo</h2>
+  <div class="legend">
+    <span><i class="c ok">OK</i> nessuna allerta</span>
+    <span><i class="c t">vera</i> allerta corretta</span>
+    <span><i class="c f">falsa</i> falso allarme</span>
+    <span><i class="c u">dubbia</i> da verificare</span>
+    <span><i class="c nv">n.v.</i> volume troppo basso per giudicare</span>
+    <span><i class="c na">—</i> non applicabile o non verificato</span>
+  </div>
+  <div class="scroll">
+  <table class="mx">
+    <thead><tr><th>Struttura</th><th>BLK-02<br>account</th><th>BLK-03<br>rifiuti</th><th>BLK-04<br>spesa 0</th><th>BLK-05<br>limitata budget</th><th>BLK-06<br>fine</th><th>TRK-04<br>conv. Ads</th><th>TRK-13<br>primarie</th><th>TRK-15<br>link GA4</th><th>D01<br>sessioni</th><th>D02<br>richiesta</th><th>D03<br>duplicati</th><th>D09<br>UTM</th><th>BUD-01*<br>quota budget</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="14">PRIMULA</td></tr>
+      <tr><td>Primula</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera ×1</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c t">×2</i></td></tr>
+      <tr><td>Hotel Galli's</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera ×3</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c t">×2</i></td></tr>
+      <tr class="grp"><td colspan="14">AIRPORT HOTEL BOLOGNA</td></tr>
+      <tr><td>Airport Hotel Bologna</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c f">falsa</i></td><td><i class="c t">vera ×3</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">×5</i></td></tr>
+      <tr><td>Easy Parking Bologna</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera ×1</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">×1</i></td></tr>
+      <tr class="grp"><td colspan="14">TRAMONTO D'ORO</td></tr>
+      <tr><td>Tramonto d'Oro</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera ×1</i></td><td><i class="c ok">OK</i></td><td><i class="c u">dubbia</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c t">×1</i></td></tr>
+      <tr><td>Villa Eos <span class="muted">(in pausa)</span></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c na">—</i></td><td><i class="c na">—</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c nv">n.v.</i></td><td><i class="c nv">n.v.</i></td><td><i class="c nv">n.v.</i></td><td><i class="c na">—</i></td></tr>
+      <tr><td>GH Stella Marina</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c f">falsa</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c f">falsa</i></td><td><i class="c nv">n.v.</i></td><td><i class="c nv">n.v.</i></td><td><i class="c ok">OK</i></td><td><i class="c nv">n.v.</i></td></tr>
+      <tr><td>GH Il Corallo</td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c f">falsa</i></td><td><i class="c t">vera</i></td><td><i class="c ok">OK</i></td><td><i class="c ok">OK</i></td><td><i class="c nv">n.v.</i></td><td><i class="c nv">n.v.</i></td><td><i class="c ok">OK</i></td><td><i class="c nv">n.v.</i></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">* BUD-01 è in Fase 3 (proposta MVP-1): numero di campagne che supererebbero la soglia del loro tipo negli ultimi 7 giorni. Su Galli's scatterebbe anche BUD-02 sul Brand (persa per ranking 20%). GA4 di Primula e Galli's non verificato.</p>
+</section>
+
+<section>
+  <h2>Falsi allarmi e correzioni al catalogo</h2>
+  <p class="muted">Proposte, non ancora applicate al catalogo v0.4.</p>
+  <div class="fixes">
+    <div class="fix"><span class="code">BLK-04 · spesa a zero</span>
+      <dl><dt>Cosa è successo</dt><dd>Scatta su "cruise travelers" di Airport (1,49 € in 7 giorni, 15 impressioni) e sul Brand EN di Stella Marina (0,57 €).</dd>
+      <dt>Correzione</dt><dd>Richiedere una spesa di almeno 20 € nei 7 giorni precedenti.</dd></dl></div>
+    <div class="fix"><span class="code">TRK-04 · conversioni Ads a zero</span>
+      <dl><dt>Cosa è successo</dt><dd>Su Il Corallo 71 dei 76 clic sono remarketing Display a pochi centesimi; il tasso storico è gonfiato dalle micro-conversioni. La nuova soglia ha invece evitato il falso allarme di Stella Marina che la vecchia regola avrebbe dato.</dd>
+      <dt>Correzione</dt><dd>Contare solo i clic di Search, PMax e Hotel; calcolare il tasso solo sull'azione di richiesta.</dd></dl></div>
+    <div class="fix"><span class="code">TRK-01 · sessioni a zero</span>
+      <dl><dt>Cosa è successo</dt><dd>Stella Marina ha 0 sessioni ieri, ma il calo è graduale da 8 settimane (da 125 a 2 a settimana): fine stagione, non tag rotto.</dd>
+      <dt>Correzione</dt><dd>Oltre al calendario di apertura, sospendere quando la media degli ultimi 28 giorni è sotto 5 sessioni al giorno.</dd></dl></div>
+    <div class="fix"><span class="code">TRK-03 · duplicazioni GA4</span>
+      <dl><dt>Cosa è successo</dt><dd>Su Tramonto il picco "12 volte la media" viene da una media di 0,25; il segnale vero è il rapporto eventi/sessioni pari a 3.</dd>
+      <dt>Correzione</dt><dd>Test del picco solo con media ≥ 3; test separato sul rapporto eventi per sessione (&gt; 1,3).</dd></dl></div>
+    <div class="fix"><span class="code">BLK-05 · limitata dal budget</span>
+      <dl><dt>Cosa è successo</dt><dd>9 allerte vere su 5 account, ma in ottobre molte generiche hanno tetti di budget voluti.</dd>
+      <dt>Correzione</dt><dd>Alta solo per le campagne Brand; per le altre Media e una sola allerta per account con l'elenco delle campagne.</dd></dl></div>
+    <div class="fix"><span class="code">BLK-03 · annunci rifiutati</span>
+      <dl><dt>Cosa è successo</dt><dd>La campagna "congressi" di Airport ha il motivo "annunci rifiutati", ma gli annunci rifiutati sono in pausa.</dd>
+      <dt>Correzione</dt><dd>Leggere l'approvazione dei singoli annunci attivi; per PMax usare il motivo "gruppi di asset limitati dalle norme".</dd></dl></div>
+    <div class="fix"><span class="code">D02 · evento di richiesta</span>
+      <dl><dt>Cosa è successo</dt><dd>Su Tramonto la richiesta vera è <code>purchase</code> (30 al mese); con <code>generate_lead</code> (2 al mese) TRK-02 scatterebbe ogni giorno. <code>booking_engine</code> è un clic, non una richiesta.</dd>
+      <dt>Correzione</dt><dd>Evento di richiesta configurato per ogni struttura; D02 attivo solo se l'evento ha in media almeno 1 occorrenza al giorno.</dd></dl></div>
+    <div class="fix"><span class="code">D09 · UTM</span>
+      <dl><dt>Cosa è successo</dt><dd>Nessuna struttura supera il 10%. Su Villa Eos 19 sessioni bastano a dare il 26%.</dd>
+      <dt>Correzione</dt><dd>Volume minimo di 100 sessioni da campagne nel mese; trattare google/cpc con campagna "(not set)" come conforme (effetto del tag automatico).</dd></dl></div>
+  </div>
+</section>
+
+<section>
+  <h2>Configurazione emersa</h2>
+  <div class="cols">
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Struttura</th><th>Evento di richiesta GA4</th><th>Volume 30 gg</th></tr></thead>
+        <tbody>
+          <tr><td>Airport Hotel Bologna</td><td><code>purchase</code> (+ <code>generate_lead</code> preventivi)</td><td class="n">657 + 85</td></tr>
+          <tr><td>Easy Parking Bologna</td><td><code>generate_lead</code></td><td class="n">526</td></tr>
+          <tr><td>Tramonto d'Oro</td><td><code>purchase</code></td><td class="n">30</td></tr>
+          <tr><td>GH Il Corallo</td><td>nessuna richiesta vera (<code>booking_engine</code>)</td><td class="n">14</td></tr>
+          <tr><td>Villa Eos, Stella Marina</td><td>nessun evento significativo</td><td class="n">≤ 4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Struttura</th><th>Google Ads</th><th>GA4</th></tr></thead>
+        <tbody>
+          <tr><td>Airport Hotel Bologna</td><td class="n">956-147-1061</td><td class="n">314139133</td></tr>
+          <tr><td>Easy Parking Bologna</td><td class="n">519-394-5678</td><td class="n">332888152</td></tr>
+          <tr><td>Tramonto d'Oro</td><td class="n">946-440-4509</td><td class="n">256886647</td></tr>
+          <tr><td>Villa Eos</td><td class="n">314-226-8254</td><td class="n">528816240</td></tr>
+          <tr><td>GH Stella Marina</td><td class="n">285-742-0425</td><td class="n">528808166</td></tr>
+          <tr><td>GH Il Corallo</td><td class="n">137-123-6952 ?</td><td class="n">528790792</td></tr>
+          <tr><td>Bucaneve</td><td class="n">872-320-6681</td><td class="n">324249629</td></tr>
+          <tr><td>Coast</td><td class="n">687-215-3556</td><td class="n">323527271 ?</td></tr>
+          <tr><td>Vista Mare Cesenatico</td><td class="n">767-478-1287</td><td class="n">289759893</td></tr>
+          <tr><td>Eden Roc</td><td class="n">608-351-8398</td><td class="n">421199116</td></tr>
+          <tr><td>Villa degli Dei</td><td class="n">216-595-1962</td><td class="n">484526149</td></tr>
+          <tr><td>Adamo ed Eva</td><td class="n">709-056-2711</td><td class="n">442469072</td></tr>
+          <tr><td>Yummy</td><td class="n muted">non trovato</td><td class="n muted">non trovata</td></tr>
+          <tr><td>Eden Sky Bar</td><td class="n muted">non trovato</td><td class="n">492288450</td></tr>
+          <tr><td>Parco dei Castagni</td><td class="n">935-993-4757</td><td class="n">324071484</td></tr>
+          <tr><td>Ca' Bianca</td><td class="n">875-676-2202</td><td class="n">322348963</td></tr>
+          <tr><td>Hotel Brig</td><td class="n">106-571-4162</td><td class="n">360392083</td></tr>
+          <tr><td>Primula</td><td class="n">632-763-6798</td><td class="n">427199977</td></tr>
+          <tr><td>Hotel Galli's</td><td class="n">442-176-4597</td><td class="n">368111404</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="muted">Abbinamenti trovati per nome e dominio, da confrontare con l'anagrafica. "?" = da confermare: per Il Corallo esistono anche corallohotel.it e hotel-corallo.com; per Coast il nome della proprietà è "Coast Hotel & Spa" (Milano Marittima). Da non confondere: Vistamare Suite (Lido di Savio) non è Vista Mare Cesenatico.</p>
+</section>
+
+<section>
+  <h2>Note tecniche per il programmatore</h2>
+  <ul class="plain">
+    <li>Le date delle campagne si leggono con <code>campaign.start_date_time</code> ed <code>campaign.end_date_time</code>: BLK-06 è fattibile già in MVP-0. Punto aperto chiuso.</li>
+    <li>Per TRK-13 usare <code>conversion_action.include_in_conversions_metric</code>, non <code>primary_for_goal</code>: alcune azioni gestite da Google risultano primarie ma non incluse.</li>
+    <li>Le query segmentate per data non restituiscono le righe a zero: una campagna assente nel giorno D-1 ha spesa 0. Serve per BLK-04.</li>
+    <li><code>metrics.conversion_last_conversion_date</code> funziona solo senza segmento data; utile per dire "ultima conversione il …" nel dato trigger.</li>
+    <li><code>campaign.primary_status_reasons</code> può valere solo "UNKNOWN" (visto su Tramonto): non usarlo da solo per BLK-04 e BLK-05.</li>
+    <li>Quota impressioni al minimo restituita come 0,0999, come previsto dal catalogo.</li>
+    <li>In GA4 i valori di D-1 sono più bassi di D-2 (Easy Parking: −32% sessioni, −47% eventi chiave): conferma la scelta del giorno consolidato.</li>
+    <li>Non verificati in questa prova: fatturazione Google Ads (<code>billing_setup</code>), collegamento GA4 dal lato <code>data_link</code>.</li>
+  </ul>
+</section>
+</div>

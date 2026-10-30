@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Google_Ads_NS__customers_list_accessible_customers",
+      "mcp__Google_Ads_NS__search_search",
+      "mcp__Google_Ads_NS__metadata_get_resource_metadata",
+      "mcp__Google_Analytics_NS__get_account_summaries",
+      "mcp__Google_Analytics_NS__run_report",
+      "mcp__Google_Analytics_NS__run_realtime_report",
+      "mcp__Google_Analytics_NS__list_google_ads_links",
+      "mcp__Google_Analytics_NS__get_property_details"
+    ]
+  }
+}
