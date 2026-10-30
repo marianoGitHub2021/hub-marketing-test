@@ -24,4 +24,4 @@ Fase di specifica completata (catalogo allerte v0.5). Il codice non è ancora in
 
 ## Stack previsto
 
-PHP 8.3+ con Laravel, MariaDB dedicato con snapshot giornalieri, frontend JavaScript, raccolta dati una volta al giorno prima delle 08:30. Fido e Quoto in sola lettura. Da confermare col programmatore prima dell'avvio (vedi punti aperti in `docs/decisioni-fase-0.md`).
+PHP 8.3+ con Laravel, MariaDB dedicato con snapshot giornalieri, frontend JavaScript, raccolta dati una volta al giorno prima delle 08:30. Fido e Quoto in sola lettura. Il codice è generato con Claude, senza il programmatore di Fido e Quoto; i rilasci sono approvati da Mariano.

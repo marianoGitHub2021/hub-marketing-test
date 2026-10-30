@@ -51,7 +51,7 @@ Stato Fase 0: completata. Tutte le decisioni sono prese e l'anagrafica dei clien
 
 **Più persone sullo stesso ruolo** (**Proposta — da confermare**): l'ordine nella tabella indica il titolare (primo nome), che riceve le notifiche; gli altri sono co-assegnatari e vedono le allerte in "Assegnate a me". Il sostituto subentra quando il titolare è segnato assente in Impostazioni.
 
-**Modello dati** (aggiornato 20/10/2026): idcliente unico → siti (idsito) → account piattaforme. Un cliente con un solo sito ha un idcliente e un solo sito collegato. Ogni account può essere collegato a uno o più siti dello stesso cliente (es. un account Meta per tutto il gruppo). Le assegnazioni specialista × ruolo sono per sito. In Fido il cliente corrisponde all'anagrafica collegata ai siti (tabelle anagrafica e rel_anagra_siti): da verificare con il programmatore se usarne l'id come idcliente. È il primo punto da chiudere: è la chiave del livello 2.
+**Modello dati** (aggiornato 20/10/2026): idcliente unico → siti (idsito) → account piattaforme. Un cliente con un solo sito ha un idcliente e un solo sito collegato. Ogni account può essere collegato a uno o più siti dello stesso cliente (es. un account Meta per tutto il gruppo). Le assegnazioni specialista × ruolo sono per sito. In Fido il cliente corrisponde all'anagrafica collegata ai siti (tabelle anagrafica e rel_anagra_siti): da verificare sullo schema del database di Fido se usarne l'id come idcliente. È il primo punto da chiudere: è la chiave del livello 2.
 
 **Account condivisi con assegnatari diversi** (**Proposta — da confermare**): ogni account ha una "struttura di riferimento"; le allerte dell'account vanno all'operatore del ruolo su quella struttura (es. Meta di Ca' Bianca + Brig → Rossella o Giada secondo la struttura di riferimento).
 
@@ -103,7 +103,7 @@ Stato Fase 0: completata. Tutte le decisioni sono prese e l'anagrafica dei clien
 - Il formato libero resta sempre accettato; quello strutturato è un miglioramento opzionale.
 - Un solo posto in cui il team aggiorna lo stato delle attività: Fido. Lo storico delle modifiche (chi, quando, prima/dopo) è quello di Fido.
 - L'abbinamento tra attività e campagne resta nell'Hub, collegato all'id del task Fido.
-- Conseguenza tecnica: l'Hub scrive su Fido, limitatamente alla creazione dei task dal piano approvato. È un'eccezione alla lettura in sola lettura (§7) da concordare col programmatore prima della Fase 2.
+- Conseguenza tecnica: l'Hub scrive su Fido, limitatamente alla creazione dei task dal piano approvato. È un'eccezione alla lettura in sola lettura (§7) da verificare prima della Fase 2.
 
 ### Tipi di scadenza
 
@@ -199,8 +199,8 @@ Ogni modifica alle attività di piano è registrata nello storico (chi, quando, 
 
 - Nuova applicazione separata con database dedicato, sullo stesso stack di Fido/Quoto: PHP + MariaDB (Fido su MariaDB 11.4).
 - Impostazione moderna consigliata: PHP 8.3+ con framework diffuso (es. Laravel), frontend JavaScript per la dashboard, lettura da Fido/Quoto in sola lettura. Eccezione (Fase 2): creazione dei task di piano in Fido.
-- Sviluppo assistito da Claude: dall'utente (prototipi, regole, configurazioni) e/o dal programmatore di Fido e Quoto (architettura, integrazioni, sicurezza, rilasci).
-- Regole di progetto: repository Git, ambiente di prova separato, file di istruzioni per Claude nel repository, revisione del programmatore prima dei rilasci.
+- Sviluppo (deciso il 30/10/2026): il codice è generato con Claude su indicazione di Mariano, senza passare dal programmatore di Fido e Quoto. Architettura, integrazioni, sicurezza e rilasci sono gestiti in questo modo; il programmatore non è un passaggio obbligato.
+- Regole di progetto: repository Git (marianoGitHub2021/hub-marketing-test), ambiente di prova separato, file di istruzioni per Claude nel repository, test automatici sul motore delle regole, approvazione di Mariano prima dei rilasci.
 - Accesso utenti: proposto login con account Google aziendale.
 - Il backend Express e i server MCP di Visual Impact non si riusano; si riprendono solo regole e formule.
 
@@ -237,11 +237,11 @@ Valori modificabili senza intervenire sul codice:
 
 | Punto | Da chi | Serve entro |
 |---|---|---|
-| Uso dell'id anagrafica di Fido come idcliente (base del livello 2) | Programmatore | Inizio MVP-0 (primo punto) |
-| Versione PHP e framework di Fido e Quoto | Programmatore | Inizio MVP-0 |
-| Credenziali/token per uso backend (Google Ads, GA4, Search Console, Meta "utente di sistema") | Programmatore | Inizio MVP-0 |
-| Lettura di progetti, task, ore e contratti da Fido | Programmatore | MVP-0 (CTR) |
-| Scrittura dei task di piano su Fido dall'Hub | Programmatore | Prima della Fase 2 |
+| Uso dell'id anagrafica di Fido come idcliente (base del livello 2): serve lo schema delle tabelle anagrafica e rel_anagra_siti | Mariano | Inizio MVP-0 (primo punto) |
+| Server dell'Hub (PHP 8.3+, MariaDB, cron) e accesso in lettura ai database di Fido e Quoto | Mariano | Inizio MVP-0 |
+| Credenziali/token per uso backend (Google Ads, GA4, Search Console, Meta "utente di sistema") | Mariano | Inizio MVP-0 |
+| Lettura di progetti, task, ore e contratti da Fido: tabelle e campi | Mariano | MVP-0 (CTR) |
+| Scrittura dei task di piano su Fido dall'Hub (eventuale coinvolgimento del programmatore solo qui) | Mariano | Prima della Fase 2 |
 | Campi aggiuntivi dell'anagrafica (§2) per le strutture pilota | Account + Admin | MVP-0 |
 | Caselle email di notifica per settore (mail marketing, editor) | Team | MVP-0 (notifiche) |
 | Casella presidiata nel weekend per le critiche | Team | MVP-0 (notifiche) |

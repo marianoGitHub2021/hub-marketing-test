@@ -23,10 +23,11 @@ Hub interno di Network Service per le attività di marketing sui clienti hotel. 
 ## Rilasci
 
 - Repository Git, ambiente di prova separato.
-- Revisione del programmatore di Fido e Quoto prima di ogni rilascio.
+- Il codice lo genera Claude, senza passare dal programmatore di Fido e Quoto (decisione del 30/10/2026). Mariano rivede e approva ogni rilascio.
+- Sicurezza, test e migrazioni del database sono quindi responsabilità del codice stesso: test automatici per il motore delle regole, migrazioni reversibili, nessun accesso in scrittura a Fido o Quoto.
 - Si lavora su branch; nessun push diretto sul branch principale per il codice.
 
-## Stack (da confermare col programmatore)
+## Stack
 
 PHP 8.3+ con Laravel, MariaDB, frontend JavaScript, raccolta dati schedulata una volta al giorno prima delle 08:30.
 

@@ -139,3 +139,9 @@ Altre modifiche:
 - Deduplica: BLK-05 non Brand e TRK-13 una allerta per account.
 - Note tecniche per lo sviluppatore sotto la sezione BLK; nuova sezione §4 "Prova a secco".
 - Nuovi punti aperti in decisioni-fase-0.md: pulizia delle conversioni Google Ads e verifica del tracciamento GA4 di Villa Eos, Stella Marina e Il Corallo, entrambi prima del rilascio MVP-0.
+
+---
+
+# Decisione del 30/10/2026: sviluppo senza il programmatore
+
+Il codice dell'Hub è generato con Claude su indicazione di Mariano, senza passare dal programmatore di Fido e Quoto. Aggiornati CLAUDE.md, README.md e decisioni-fase-0.md (§7 e punti aperti): i punti prima assegnati al programmatore passano a Mariano (server, accessi in lettura a Fido e Quoto con lo schema delle tabelle, credenziali delle API). La revisione prima dei rilasci diventa l'approvazione di Mariano, con test automatici sul motore delle regole.
